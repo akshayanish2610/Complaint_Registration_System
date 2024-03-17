@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Student List</title>
+    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+          }
+        
+          header:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          }
+          
+        
+          nav ul {
+            list-style: none;
+            padding: 0;
+          }
+        
+          nav ul li {
+            display: inline-block;
+            margin-right: 20px;
+          }
+        
+          nav a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 23px;
+        }
+        
+        nav a:hover {
+            text-decoration: underline; /* Underline on hover */
+        }
+
+        /* Style for the main content */
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome, {{ user.first_name }} {{ user.last_name }}!</h1>
+        <nav>
+          <ul>
+            <li><a href="{% url 'staff_dashboard' %}">Home</a></li>
+            <li><a href="{% url 'staff_complaint_display'%}">View Complaints</a></li>
+            <li><a href="{%url 'create_student'%}">Register Students</a></li>
+            <li><a href="{% url 'student_list'%}">Students List</a></li>
+            <li><a href="{% url 'analytics'%}">Analytics</a></li>
+            <li>
+              <form action="{% url 'user_logout' %}" method="post">
+                {% csrf_token %}
+                <span>
+                    <button type="submit">Logout</button>
+                </span>
+              </form>
+            </li>
+          </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Edit Student Details</h1>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            <!-- Display a general error message if the form has errors -->
+            {% if user_form.errors or profile_form.errors %}
+                <span style="color: red;">Please correct the errors below.</span>
+            {% endif %}
+            
+            <label for="id_username">Username:</label>
+            {{ user_form.username }}
+            {% if user_form.username.errors %}
+                <span style="color: red;">{{ user_form.username.errors }}</span>
+            {% endif %}
+            
+            <label for="id_first_name">First Name:</label>
+            {{ user_form.first_name }}
+            {% if user_form.first_name.errors %}
+                <span style="color: red;">{{ user_form.first_name.errors }}</span>
+            {% endif %}
+            
+            <label for="id_last_name">Last Name:</label>
+            {{ user_form.last_name }}
+            {% if user_form.last_name.errors %}
+                <span style="color: red;">{{ user_form.last_name.errors }}</span>
+            {% endif %}
+            
+            <label for="id_email">Email:</label>
+            {{ user_form.email }}
+            {% if user_form.email.errors %}
+                <span style="color: red;">{{ user_form.email.errors }}</span>
+            {% endif %}
+            
+            <label for="id_programme">Programme:</label>
+            {{ profile_form.programme }}
+            {% if profile_form.programme.errors %}
+                <span style="color: red;">{{ profile_form.programme.errors }}</span>
+            {% endif %}
+            
+            <!-- Add the 'required' attribute to make all fields required -->
+            <button type="submit" required>Save Changes</button>
+        </form>
+        
+    </main>
+</body>
+</html>

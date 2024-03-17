@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ complaint.student.username }} Complaint Report</title>
+    <!-- Add your styling here if needed -->
+</head>
+<body>
+    <h1>{{ complaint.student.first_name }} {{ complaint.student.last_name }} Complaint Report</h1>
+    
+    <!-- Display other complaint details here as needed -->
+    <p>Complaint Type: {{ complaint.complaint_type }}</p>
+    <p>Summary: {{ complaint.summary }}</p>
+    <p>Status: {{ complaint.status }}</p>
+    
+    <!-- Display staff comments -->
+    <p>Staff Comments: {{ complaint.comments }}</p>
+</body>
+</html>

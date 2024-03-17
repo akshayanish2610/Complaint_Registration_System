@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Meetings</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+            position: relative;
+        }
+
+        header:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 23px;
+        }
+
+        nav a:hover {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 23px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .content h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .meeting-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .meeting-table th, .meeting-table td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .meeting-table th {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        .meeting-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .meeting-table a {
+          display: inline-block; /* Change display property to inline-block */
+          padding: 8px 15px;
+          background-color: #3498db;
+          color: #fff;
+          text-decoration: none;
+          border-radius: 5px;
+          text-align: center;
+          width: 200px; /* Adjust the width as needed */
+          box-sizing: border-box; /* Include padding and border in the element's total width */
+      }
+      
+
+        .meeting-table a:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Welcome, {{ user.first_name }} {{ user.last_name }}!</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'staff_dashboard' %}">Home</a></li>
+                <li><a href="{% url 'staff_complaint_display'%}">View Complaints</a></li>
+                <li><a href="{%url 'create_student'%}">Register Students</a></li>
+                <li><a href="{% url 'student_list'%}">Students List</a></li>
+                <li><a href="">Analytics</a></li>
+                <li><a href="{% url 'user_logout' %}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    {% block content %}
+    <div class="content">
+        <h2>Staff Meetings</h2>
+        <table class="meeting-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Date & Time</th>
+                    <th>Google Meet Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for staff_meeting in staff_meetings %}
+                <tr {% if staff_meeting.is_expired %}style="background-color: #FFA07A;"{% endif %}>
+                    <td>{{ staff_meeting.title }}</td>
+                    <td>{{ staff_meeting.description }}</td>
+                    <td>{{ staff_meeting.meeting_datetime }}</td>
+                    <td>
+                        {% if staff_meeting.is_expired %}
+                            Meeting Expired
+                        {% else %}
+                            <a href="{{ staff_meeting.google_meet_link }}" target="_blank">Join Google Meet</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endblock %}
+
+</body>
+
+</html>

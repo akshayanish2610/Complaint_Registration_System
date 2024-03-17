@@ -1,0 +1,257 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Edit Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+     
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+            position: relative; /* Add relative positioning */
+        }
+        
+        header:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        nav a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 23px;
+        }
+        nav a:hover {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    font-size: 23px;
+}
+        .dashboard {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        .login {
+            margin-top: 20px;
+            margin-bottom: 40px;
+            overflow: hidden;
+            background-color: white;
+            padding: 40px 30px 30px 30px;
+            border-radius: 10px;
+            position: static;
+            top: 50%;
+            width: 770px;
+            height: auto;
+            
+            transition: transform 300ms, box-shadow 300ms;
+            box-shadow: 10px 20px 20px rgba(9, 128, 144, 0.3);
+        }
+
+        .login::before,
+        .login::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-top-left-radius: 40%;
+            border-top-right-radius: 45%;
+            border-bottom-left-radius: 35%;
+            border-bottom-right-radius: 40%;
+            z-index: -1;
+        }
+
+
+        .login>label {
+            font-family: 'Asap', sans-serif;
+            display: block;
+            font-size: 16px;
+            color: rgba(69, 105, 144, 1);
+            margin-bottom: 5px;
+        }
+
+        .login>input,
+        .login>select {
+            font-family: 'Asap', sans-serif;
+            display: block;
+            border-radius: 5px;
+            font-size: 18px;
+            background: white;
+            width: 100%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .error-messages {
+            color: red;
+            font-size: 14px;
+            
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        
+        <h1>Welcome, {{ user.first_name }} {{ user.last_name }}!</h1>
+        <nav>
+          <ul>
+            <li><a href="{% url 'student_dashboard' %}">Home</a></li>
+              <li><a href="{% url 'student_complaint_history' %}">View Comaplaints</a></li>
+              <li><a href="{%url 'student_register_complaint'%}">Register Compaints</a></li>
+              <li><a href="{%url 'student_profile'%}">Profile</a></li>
+            
+            
+            <li>
+              <form action="{% url 'user_logout' %}" method="post">
+                {% csrf_token %}
+                <li>
+                  <span>
+                    <button
+                      type="submit"
+                      style="
+                        border: none;
+                        background: none;
+                        cursor: pointer;
+                        text-decoration: none;
+                        color: #fff;
+                        font-weight: bold;
+                        font-size: 23px;
+                      "
+                    >
+                      Logout
+                    </button>
+                  </span>
+                </li>
+              </form>
+            </li>
+          </ul>
+        </nav>
+      </header>
+    <section class="dashboard">
+    {% if error %}
+    <div class="error-message">
+        <center>{{ error }}</center>
+    </div>
+    {% endif %}
+    <form class="login needs-validation" method="post">
+        {% csrf_token %}
+        <center>
+            <h1 style="font-family: 'Arial', sans-serif;
+        color: #0D3802; /* Choose a color that suits your design */
+        font-size: 26px;
+        font-weight: bold;
+        text-align: center;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);">Edit Student Profile</h1>
+        </center><br>
+        <div class="row">
+            
+            <div class="col-md-6"><br>
+                
+                <label for="first_name" class="form-label">First Name:</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user_form.first_name.value }}"readonly style="background-color: #f2f2f2;"><br>
+
+                <label for="id_username" class="form-label">Register No:</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ user_form.username.value }}"readonly style="background-color: #f2f2f2;"><br>
+                
+
+                <label for="id_date_of_birth" class="form-label">Date of Birth:</label>
+              <input type="date" name="date_of_birth" class="form-control" id="id_date_of_birth" value="{{ student_profile_form.date_of_birth.value }}" required>
+<br>
+                
+                
+                <label for="id_gender" class="form-label">Gender:</label>
+                <select id="gender" class="form-select" name="gender" required><br>
+                    <option value="" selected disabled>--Select Choice--</option>
+                    <option value="male" {% if student_profile_form.gender.value == 'male' %}selected{% endif %}>Male</option>
+                    <option value="female" {% if student_profile_form.gender.value == 'female' %}selected{% endif %}>Female</option>
+                    <option value="other" {% if student_profile_form.gender.value == 'other' %}selected{% endif %}>Others</option>
+                </select>
+<br>
+                
+
+                <label for="address" class="form-label">Address:</label>
+                <input type="text"  class="form-control" id="address" name="address" value="{{ student_profile_form.address.value }}"><br>
+
+                
+
+            </div>
+
+
+
+            <div class="col-md-6"><br>
+                
+                <label for="last_name" class="form-label">Last Name:</label>
+                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user_form.last_name.value }}" readonly style="background-color: #f2f2f2;"><br>
+                
+                <label for="programme" class="form-label">Programme:</label>
+                <input type="text" name="programme" id="programme" class="form-control" value="{{ user_profile_form.programme.value }}" ><br>
+                
+
+                <label for="email" class="form-label">Email Id:</label>
+                <input type="email" class="form-control" name="email"value="{{ user_form.email.value }}" required><br>
+                
+
+                <label for="id_contact_number" class="form-label">Contact Number:</label>
+        <input type="text" name="contact_number" onkeypress="return isNumberKey(event)" id="id_contact_number" class="form-control" value="{{ student_profile_form.contact_number.value }}"required maxlength="10" ><br>
+
+        
+            </div>
+        </div>
+
+         <center><button
+        style="
+          background: linear-gradient(145deg, #F7A930, #F7A930);
+color: #fff;
+padding: 10px 20px;
+border: none;
+border-radius: 10px;
+font-weight: bold;
+cursor: pointer;
+box-shadow: 8px 8px 16px #d8d8d8, -8px -8px 16px #ffffff;
+transition: background 0.3s ease-in-out;
+        "
+      >Update Now</button></center><br>
+    </form>
+</section>
+<script>
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

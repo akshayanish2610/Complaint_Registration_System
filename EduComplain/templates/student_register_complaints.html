@@ -1,0 +1,258 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Register Complaint</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <!-- Add your custom CSS file if needed -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        header:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        nav a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 23px;
+        }
+        nav a:hover {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    font-size: 23px;
+}
+        .leave-form-container,
+    .past-leaves-container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 10px 10px 20px #c9c9c9, -10px -10px 20px #ffffff;
+    }
+
+    #toggleButton {
+        margin-top: 10px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: #007767;
+        color: #ffffff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 10px 20px;
+        cursor: pointer;
+        box-shadow: 5px 5px 10px #c2c2c2, -5px -5px 10px #ffffff;
+        transition: background 0.3s ease-in-out;
+    }
+
+    #toggleButton:hover {
+        background-color: #007767;
+    }
+        h2 {
+            color: #007BFF;
+        }
+        /* Styles for Past Leaves Container */
+        .past-leaves-container {
+            max-width: 80%;
+            margin: 10px auto;
+            text-align: center;
+        }
+        .past-leaves-container table {
+            width: 100%;
+        }
+        .past-leaves-container th,
+        .past-leaves-container td {
+            text-align: center;
+        }
+        
+    </style>
+</head>
+<body>
+    <header>
+        
+        <h1>Welcome, {{ user.first_name }} {{ user.last_name }}!</h1>
+        <nav>
+          <ul>
+            <li><a href="{% url 'student_dashboard' %}">Home</a></li>
+              <li><a href="{% url 'student_complaint_history' %}">View Comaplaints</a></li>
+              <li><a href="{%url 'student_register_complaint'%}">Register Compaints</a></li>
+              <li><a href="{%url 'student_profile'%}">Profile</a></li>
+            
+            
+            <li>
+              <form action="{% url 'user_logout' %}" method="post">
+                {% csrf_token %}
+                <li>
+                  <span>
+                    <button
+                      type="submit"
+                      style="
+                        border: none;
+                        background: none;
+                        cursor: pointer;
+                        text-decoration: none;
+                        color: #fff;
+                        font-weight: bold;
+                        font-size: 23px;
+                      "
+                    >
+                      Logout
+                    </button>
+                  </span>
+                </li>
+              </form>
+            </li>
+          </ul>
+        </nav>
+      </header>
+    <div class="container leave-form-container">
+        <h1 style="font-family: 'Arial', sans-serif;
+      color: #0D3802; /* Choose a color that suits your design */
+      font-size: 26px;
+      font-weight: bold;
+      text-align: center;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);">Register Complaint</h1>
+        {% if messages %}
+  <div class="alert alert-dismissible fade show" role="alert">
+    <ul class="list-unstyled mb-0">
+      {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+          {% if message.tags == 'success' %}
+            <div style="background-color: #d4edda; color: #155724; padding: 0.75rem;">
+          {% elif message.tags == 'error' %}
+            <div style="background-color: #f8d7da; color: #721c24; padding: 0.75rem;">
+          {% else %}
+            <div>
+          {% endif %}
+          {{ message }}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+{% endif %}
+
+            <form method="post" action="{% url 'student_register_complaint' %}" enctype="multipart/form-data">
+
+            {% csrf_token %}
+            <!-- Complaint Type -->
+            <div class="row">
+                <div class="mb-3">
+                    <label for="complaint_type" class="form-label">Complaint Type</label>
+                    <select class="form-select" id="complaint_type" name="complaint_type" required>
+                        <option value="about_college">About College</option>
+                        <option value="about_dept">About Dept</option>
+                        <option value="about_staff">About Staff</option>
+                    </select>
+                </div>
+            </div> <!-- Close the div here -->
+            
+            <!-- Summary -->
+            <div class="mb-3">
+                <label for="reason" class="form-label">Summary</label>
+                <textarea class="form-control" id="summary" name="summary" rows="4" required></textarea>
+
+            </div>
+            
+            <!-- Submit Button -->
+            <center>
+                <button type="submit" class="btn btn-primary" style="
+                    background: linear-gradient(145deg, #F7A930, #F7A930);
+                    color: #fff;
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 10px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    box-shadow: 8px 8px 16px #d8d8d8, -8px -8px 16px #ffffff;
+                    transition: background 0.3s ease-in-out;
+                ">Submit</button>
+            </center>
+            </form>
+    </div>
+
+    
+    <!-- Add this block for past leaves -->
+    <div class="past-leaves-container" id="pastLeavesContainer" style="display: none;">
+        <h2 class="text-center mb-4">Complaint History</h2>
+        <h3>Previous Complaints</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Complaint Type</th>
+                <th>Summary</th>
+                <th>Created At</th>
+                <th>Status</th>
+                <th>Comments</th>
+                <th>Action</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for complaint in all_complaints%}
+                <tr>
+                    <td>{{ complaint.complaint_type }}</td>
+                    <td>{{ complaint.summary }}</td>
+                    <td>{{ complaint.created_at }}</td>
+                    <td>{{ complaint.status }}</td>
+                    <td>{{ complaint.comments }}</td>
+                    <td>
+                      {% if complaint.report %}
+                          <!-- Add the download button only if a report exists -->
+                          <a href="{{ complaint.report.url }}" class="btn btn-primary" download>Download Report</a>
+                      {% else %}
+                          <!-- Display a message if no report is available -->
+                          No Report Available
+                      {% endif %}
+                  
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <!-- Add this button to toggle past leaves visibility -->
+    <button type="button" onclick="togglePastLeaves()" class="btn btn-secondary" id="toggleButton">View Complaint History</button>
+    <br><br><br><br>
+    <script>
+        // JavaScript function to toggle past leaves visibility
+        function togglePastLeaves() {
+            var pastLeavesContainer = document.getElementById('pastLeavesContainer');
+            pastLeavesContainer.style.display = (pastLeavesContainer.style.display === 'none') ? 'block' : 'none';
+        }
+    </script>
+    
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        
+        
+        <!-- Include jQuery UI library (for datepicker) -->
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- Bootstrap JS (optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+</body>
+</html>

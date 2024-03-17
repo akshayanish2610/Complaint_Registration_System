@@ -1,0 +1,247 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+     
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+          }
+        
+          header:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          }
+          
+        
+          nav ul {
+            list-style: none;
+            padding: 0;
+          }
+        
+          nav ul li {
+            display: inline-block;
+            margin-right: 20px;
+          }
+        
+          nav a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 23px;
+        }
+        nav a:hover {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    font-size: 23px;
+}
+
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #000000;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 5px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+            color: #fff;
+        }
+        
+    </style>
+    
+</head>
+<body>
+
+    <header>
+        
+        <h1>Welcome, {{ user.first_name }} {{ user.last_name }}!</h1>
+        <nav>
+          <ul>
+            <li><a href="{% url 'staff_dashboard' %}">Home</a></li>
+            <li><a href="{% url 'staff_complaint_display'%}">View Comaplaints</a></li>
+            <li><a href="{%url 'create_student'%}">Register Students</a></li>
+            <li><a href="{% url 'student_list'%}">Students List</a></li>
+            <li><a href="{% url 'analytics'%}">Analytics</a></li>
+            
+            
+            <li>
+              <form action="{% url 'user_logout' %}" method="post">
+                {% csrf_token %}
+                <li>
+                  <span>
+                    <button
+                      type="submit"
+                      style="
+                        border: none;
+                        background: none;
+                        cursor: pointer;
+                        text-decoration: none;
+                        color: #fff;
+                        font-weight: bold;
+                        font-size: 23px;
+                      "
+                    >
+                      Logout
+                    </button>
+                  </span>
+                </li>
+              </form>
+            </li>
+          </ul>
+        </nav>
+      </header>
+      {% block content %}
+      <br>
+      <h1 style="font-family: 'Arial', sans-serif; color: #0D3802; font-size: 26px; font-weight: bold; text-align: center; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);">Students List</h1>
+      
+      <a href="{% url 'create_student' %}" style="text-decoration: none;">
+          <center>
+              <button style="background: linear-gradient(145deg, #F7A930, #F7A930); color: #fff; padding: 10px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; box-shadow: 8px 8px 16px #D8D8D8, -8px -8px 16px #FFFFFF; transition: background 0.3s ease-in-out;">
+                  Create New Student
+              </button>
+          </center>
+      </a>
+      
+      <table class="table table-bordered" style="width:1300px">
+          <thead class="table-light">
+              <tr>
+                  <th colspan="10">
+                      <div class="mb-3">
+                          <label for="searchBar" class="form-label">Search by Name or Programme:</label>
+                          <input type="text" id="searchBar" class="form-control" oninput="searchStudents()" placeholder="Type to search">
+                      </div>
+                  </th>
+              </tr>
+              <tr>
+                  <th>Register No.</th>
+                  <th>Full Name</th>
+                  <th>Programme</th>
+                  <th>Email</th>
+                  <th>Phone No.</th>
+                  <th>Action</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for student in students %}
+                  <tr>
+                      <td>{{ student.user.username }}</td>
+                      <td>{{ student.user.get_full_name }}</td>
+                      <td>{{ student.programme }}</td>
+                      <td>{{ student.user.email }}</td>
+                      <td>{{ student.user.studentprofile.contact_number }}</td>
+                      <td>
+                          <a href="{% url 'edit_student' username=student.user.username %}">
+                              <button name="edit_button" class="btn btn-info">Edit</button>
+                          </a>
+                          <form method="post" action="{% url 'delete_student' username=student.user.username %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                      </td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+          <tr>
+              <th colspan="10">
+                  <center>
+                      <a href="{% url 'student_list' %}?export_excel=1">
+                          <button style="background: linear-gradient(145deg, #28a745, #218838); color: #fff; padding: 10px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: background 0.3s ease-in-out;" class="btn btn-success">
+                              Export to Excel
+                          </button>
+                      </a>
+                  </center>
+              </th>
+          </tr>
+      </table>
+  {% endblock %}
+</body>
+<script>
+    function searchStudents() {
+        var searchBar = document.getElementById('searchBar');
+        var filter = searchBar.value.toUpperCase();
+        var rows = document.getElementsByTagName('tr');
+
+        for (var i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
+            var cells = rows[i].getElementsByTagName('td');
+            var found = false;
+
+            for (var j = 1; j < cells.length; j++) { // Start from 1 to skip the Student ID column
+                var cellText = cells[j].textContent.toUpperCase();
+                if (cellText.indexOf(filter) > -1) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                rows[i].style.display = ''; // Set display to an empty string to show the row
+            } else {
+                rows[i].style.display = 'none';
+            }
+        }
+
+        // Set the search bar's display to block to ensure it's always visible
+        searchBar.style.display = 'block';
+    }
+</script>
+
+</html>

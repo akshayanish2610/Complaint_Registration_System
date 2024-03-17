@@ -1,0 +1,428 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Comaplaint Display Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+            position: relative;
+            /* Add relative positioning */
+        }
+
+        header:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 23px;
+        }
+
+        nav a:hover {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    font-size: 23px;
+}
+
+
+        .login {
+            margin-top: 20px;
+            margin-bottom: 40px;
+            overflow: hidden;
+            background-color: white;
+            padding: 40px 30px 30px 30px;
+            border-radius: 10px;
+            position: static;
+            top: 50%;
+            width: 770px;
+            height: auto;
+
+            transition: transform 300ms, box-shadow 300ms;
+            box-shadow: 10px 20px 20px rgba(9, 128, 144, 0.3);
+        }
+
+        .login::before,
+        .login::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-top-left-radius: 40%;
+            border-top-right-radius: 45%;
+            border-bottom-left-radius: 35%;
+            border-bottom-right-radius: 40%;
+            z-index: -1;
+        }
+
+
+        .login>label {
+            font-family: 'Asap', sans-serif;
+            display: block;
+            font-size: 16px;
+            color: rgba(69, 105, 144, 1);
+            margin-bottom: 5px;
+        }
+
+        .login>input,
+        .login>select {
+            font-family: 'Asap', sans-serif;
+            display: block;
+            border-radius: 5px;
+            font-size: 18px;
+            background: white;
+            width: 100%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .login>button {
+            font-family: 'Asap', sans-serif;
+            cursor: pointer;
+            color: #fff;
+            font-size: 16px;
+            text-transform: uppercase;
+            width: auto;
+            border: 0;
+            padding: 10px 0;
+            margin-top: 10px;
+            margin-left: 300px;
+            border-radius: 5px;
+            background-color: rgba(244, 91, 105, 1);
+            transition: background-color 300ms;
+        }
+
+        .login>button:hover {
+            background-color: darken(rgba(244, 91, 105, 1), 5%);
+        }
+
+
+        .error-messages {
+            color: red;
+            font-size: 14px;
+
+        }
+        
+    </style>
+</head>
+
+<body>
+    <header>
+       
+        <h1>Welcome, {{ user.first_name }} {{ user.last_name }}!</h1>
+        <nav>
+          <ul>
+            <li><a href="{% url 'staff_dashboard' %}">Home</a></li>
+            <li><a href="{% url 'staff_complaint_display'%}">View Comaplaints</a></li>
+            <li><a href="{%url 'create_student'%}">Register Students</a></li>
+            <li><a href="{% url 'student_list'%}">Students List</a></li>
+            <li><a href="{% url 'analytics'%}">Analytics</a></li>
+            
+            
+            <li>
+              <form action="{% url 'user_logout' %}" method="post">
+                {% csrf_token %}
+                <li>
+                  <span>
+                    <button
+                      type="submit"
+                      style="
+                        border: none;
+                        background: none;
+                        cursor: pointer;
+                        text-decoration: none;
+                        color: #fff;
+                        font-weight: bold;
+                        font-size: 23px;
+                      "
+                    >
+                      Logout
+                    </button>
+                  </span>
+                </li>
+              </form>
+            </li>
+          </ul>
+        </nav>
+      </header>
+    <section class="dashboard"><br>
+        <h1 style="font-family: 'Arial', sans-serif;
+      color: #0D3802; /* Choose a color that suits your design */
+      font-size: 26px;
+      font-weight: bold;
+      text-align: center;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);">
+            <center>Complaint Display - Staff dashboard</center>
+        </h1><br>
+        
+        <table class="table table-bordered" style="width: 1200px; margin-left: auto; margin-right: auto;" border="1">
+            <thead class="table-light">
+                
+
+<tr>
+    <th colspan="10">
+        <div class="mb-3" style="display: flex; align-items: center; justify-content: center;">
+            <!-- Filter by Status -->
+            <div style="margin-right: 20px;">
+                <label for="statusFilter" class="form-label">Filter by Status:</label>
+                <select id="statusFilter" class="form-select" onchange="filterComplaints()">
+                    <option value="all" selected>All</option>
+                    <option value="pending">Pending</option>
+                    <option value="accepted">Accepted</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="ongoing">Ongoing</option>
+                    <option value="solved">Solved</option>
+                </select>
+            </div>
+
+            <!-- Filter by Complaint Type -->
+            <div>
+                <label for="typeFilter" class="form-label">Filter by Complaint Type:</label>
+                <select id="typeFilter" class="form-select" onchange="filterComplaints()">
+                    <option value="all" selected>All</option>
+                    <!-- Add options for each complaint type -->
+                    <option value="about_college">About College</option>
+                    <option value="about_dept">About Dept</option>
+                    <option value="about_staff">About Staff</option>
+                </select>
+            </div>
+        </div>
+    </th>
+</tr>
+
+
+
+                <tr>
+                    <th scope="col">
+                        <center>Register No.<center>
+                    </th>
+                    <th scope="col">
+                        <center>Name<center>
+                    </th>
+                    <th scope="col">
+                        <center>Programme<center>
+                    </th>
+                    <th scope="col">
+                        <center>Complaint Type<center>
+                    </th>
+                    <th scope="col">
+                        <center>Date<center>
+                    </th>
+                    </th>
+                    <th scope="col">
+                        <center>Summary<center>
+                    </th>
+                    <th scope="col">
+                        <center>Status<center>
+                    </th>
+                    <th scope="col">
+                        <center>Comments<center>
+                    </th>
+                    <th scope="col">
+                        <center>Action<center>
+                    </th>
+
+                    <th scope="col">
+                        <center>Generate Report</center>
+                    </th>
+
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for complaint in all_complaints %}
+                <tr class="complaint-row" data-status="{{ complaint.status }}" data-program="{{ complaint.programme }}" data-type="{{ complaint.complaint_type }}">
+                
+                
+                    <td>
+                        <center>{{ complaint.student.username }}</center>
+                    </td>
+                    <td>
+                        <center>{{ complaint.student.first_name }} {{ complaint.student.last_name }}</center>
+                    </td>
+                    <td>
+                        <center>{{ complaint.student.userprofile.programme }}</center>
+                    </td>
+                    <td>
+                        <center>{{ complaint.complaint_type }}</center>
+                    </td>
+                    <td>
+                        <center>{{ complaint.created_at }}</center>
+                    </td>
+                    <td>
+                        <center>{{ complaint.summary }}
+                    </td>
+                    </center>
+                    </td>
+                    <td><b>
+                        <center style="color:
+                            {% if complaint.status == 'pending' %}
+                                orange;  <!-- Set the color for 'pending' status -->
+                            {% elif complaint.status == 'accepted' %}
+                                green;   <!-- Set the color for 'accepted' status -->
+                            {% elif complaint.status == 'rejected' %}
+                                red;     <!-- Set the color for 'rejected' status -->
+                            {% elif complaint.status == 'ongoing' %}
+                                yellow;     <!-- Set the color for 'ongoing' status -->
+                            {% elif complaint.status == 'solved' %}
+                                blue;     <!-- Set the color for 'solved' status -->
+                            {% endif %}
+                        ">
+                            {{ complaint.status }}
+                        </b></center>
+                    </td>
+
+                    <td>
+                        <center>{{ complaint.comments }}</center>
+                    </td>
+                    <td>
+                        <!-- Button to trigger the update form modal -->
+                        <button type="button" class="btn btn-primary" style="background-color: #F7A930;" data-bs-toggle="modal"
+                            data-bs-target="#complaintUpdateModal{{ complaint.id }}">
+                            Update
+                        </button>
+
+                        <!-- Leave Update Modal -->
+                        <div class="modal fade" id="complaintUpdateModal{{ complaint.id }}" tabindex="-1"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Update complaint Status of {{ complaint.student.first_name }} {{ complaint.student.last_name }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="post" action="{% url 'staff_complaint_display' %}">
+                                            {% csrf_token %}
+
+                                            <label for="status" class="form-label">Status:</label>
+                                            <select id="status" class="form-select" name="status" required><br>
+                                                <option value="" selected disabled>--Select Choice--</option>
+                                                <option value="pending">Pending</option>
+                                                <option value="accepted">Accepted</option>
+                                                <option value="rejected">Rejected</option>
+                                                <option value="ongoing">Ongoing</option>
+                                                <option value="solved">Solved</option>
+
+
+                                            </select><br>
+                                            <label for="comments" class="form-label">Comments if any:</label>
+                                            <textarea class="form-control" id="comments" name="comments"
+                                                placeholder="Enter Comments if any"></textarea><br />
+                                            <input type="hidden" name="complaint_id" value="{{ complaint.id }}">
+                                            <button type="submit" class="btn btn-primary" style="background-color: #F7A930;">Update Complaint</button>
+                                            <button type="button" class="btn btn-secondary" style="background-color: lightcoral;"
+                                            data-bs-dismiss="modal">Close</button>
+                                        </form>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <td>
+                            <center>
+                                <!-- Button to trigger the generate report modal -->
+                                <button type="button" class="btn btn-primary" style="background-color: #F7A930;" data-bs-toggle="modal"
+                                    data-bs-target="#generateReportModal{{ complaint.id }}">
+                                    Generate Report
+                                </button>
+                
+                                <!-- Generate Report Modal -->
+                                <div class="modal fade" id="generateReportModal{{ complaint.id }}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Generate Report for {{ complaint.student.first_name }} {{ complaint.student.last_name }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!-- Form to add comments and generate PDF -->
+                                                <form method="post" action="{% url 'generate_report' %}" target="_blank">
+                                                    {% csrf_token %}
+                
+                                                    <label for="comments" class="form-label">Description:</label>
+                                                    <textarea class="form-control" id="comments" name="comments"
+                                                        placeholder="Enter the description for the report"></textarea><br />
+                                                    <input type="hidden" name="complaint_id" value="{{ complaint.id }}">
+                                                    <button type="submit" class="btn btn-primary" style="background-color: #F7A930;">Generate PDF</button>
+                                                    <button type="button" class="btn btn-secondary" style="background-color: lightcoral;"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                </form>
+                                            </div>
+                
+                                        </div>
+                                    </div>
+                                </div>
+                            </center>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+                    
+                <script>
+                    function filterComplaints() {
+                        var statusFilter = document.getElementById('statusFilter').value;
+                        var typeFilter = document.getElementById('typeFilter').value.toLowerCase();
+                    
+                        var complaintRows = document.getElementsByClassName('complaint-row');
+                        for (var i = 0; i < complaintRows.length; i++) {
+                            var status = complaintRows[i].getAttribute('data-status');
+                            var type = complaintRows[i].getAttribute('data-type').toLowerCase();
+                    
+                            var typeMatch = (typeFilter === 'all' || type === typeFilter);
+                    
+                            if (
+                                (statusFilter === 'all' || status === statusFilter) &&
+                                typeMatch
+                            ) {
+                                complaintRows[i].style.display = '';
+                            } else {
+                                complaintRows[i].style.display = 'none';
+                            }
+                        }
+                    }
+                    
+                    
+                </script>
+                 
+        <!-- Bootstrap JS (required for modal) -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,361 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Student</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+     
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+            position: relative; /* Add relative positioning */
+        }
+        
+        header:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+       
+        
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        nav a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 23px;
+        }
+        nav a:hover {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    font-size: 23px;
+}
+        .dashboard {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        .login {
+            margin-top: 20px;
+            margin-bottom: 40px;
+            overflow: hidden;
+            background-color: white;
+            padding: 40px 30px 30px 30px;
+            border-radius: 10px;
+            position: static;
+            top: 50%;
+            width: 870px;
+            height: auto;
+            
+            transition: transform 300ms, box-shadow 300ms;
+            box-shadow: 10px 20px 20px rgba(9, 128, 144, 0.3);
+        }
+
+        .login::before,
+        .login::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-top-left-radius: 40%;
+            border-top-right-radius: 45%;
+            border-bottom-left-radius: 35%;
+            border-bottom-right-radius: 40%;
+            z-index: -1;
+        }
+
+
+        .login>label {
+            font-family: 'Asap', sans-serif;
+            display: block;
+            font-size: 16px;
+            color: rgba(69, 105, 144, 1);
+            margin-bottom: 5px;
+        }
+
+        .login>input,
+        .login>select {
+            font-family: 'Asap', sans-serif;
+            display: block;
+            border-radius: 5px;
+            font-size: 18px;
+            background: white;
+            width: 100%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        
+
+
+        .error-messages {
+            color: red;
+            font-size: 14px;
+            
+        }
+    </style>
+</head>
+
+
+
+<body>
+
+    <header>
+        
+        <h1>Welcome, {{ user.first_name }} {{ user.last_name }}!</h1>
+        <nav>
+          <ul>
+            <li><a href="{% url 'staff_dashboard' %}">Home</a></li>
+            <li><a href="{% url 'staff_complaint_display'%}">View Comaplaints</a></li>
+            <li><a href="{%url 'create_student'%}">Register Students</a></li>
+            <li><a href="{% url 'student_list'%}">Students List</a></li>
+            <li><a href="{%url 'analytics'%}">Analytics</a></li>
+            
+            
+            <li>
+              <form action="{% url 'user_logout' %}" method="post">
+                {% csrf_token %}
+                <li>
+                  <span>
+                    <button
+                      type="submit"
+                      style="
+                        border: none;
+                        background: none;
+                        cursor: pointer;
+                        text-decoration: none;
+                        color: #fff;
+                        font-weight: bold;
+                        font-size: 23px;
+                      "
+                    >
+                      Logout
+                    </button>
+                  </span>
+                </li>
+              </form>
+            </li>
+          </ul>
+        </nav>
+      </header>
+    <section class="dashboard">
+        {% if user_form.errors %}
+        <div class="alert alert-danger">
+          <strong>Error!</strong> There was an error with your submission. Please fix the errors below.
+          <ul>
+            {% for error in user_form.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+      {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% if user_form.email.errors %}
+  <div class="alert alert-danger" role="alert">
+    {{ user_form.email.errors.0 }}
+  </div>
+{% endif %}
+    <form class="login needs-validation" method="post" action="{% url 'create_student' %}" onsubmit="return validateEmail();" ...>
+        {% csrf_token %}
+        <center>
+            <h1 style="font-family: 'Arial', sans-serif;
+  color: #0D3802; /* Choose a color that suits your design */
+  font-size: 26px;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);">Add New Student</h1>
+        </center><br>
+        <div class="row">
+            
+            <div class="col-md-6"><br>
+
+                <label for="first_name" class="form-label">First Name:</label>
+                <input type="text" pattern="[A-Za-z]+" title="First name should not contain special characters or numbers" class="form-control" id="first_name" name="first_name" placeholder="First Name" required><br>
+
+                <label for="username" class="form-label">Reg No:</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Enter register number" required>
+  {% if user_form.username.errors %}
+    <div class="error-messages">{{ user_form.username.errors.0 }}</div>
+  {% endif %}
+  <br>
+
+
+                
+                
+                <label for="programme" class="form-label">Programme:</label>
+                <input type="text" class="form-control" pattern="[A-Za-z ]+"  title="Programme should not contain special characters or numbers" id="programme" name="programme" placeholder="Enter Programme" required><br>
+
+
+                <label for="password2" class="form-label">Confirm Password:</label>
+                <div class="input-group">
+                    <input type="password" pattern="^(?!.*\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$" class="form-control" id="password2" name="password2" placeholder="Enter Confirm Password" required>
+                    <span class="input-group-text">
+                        <i class="fa fa-eye" aria-hidden="true" id="togglePassword2"></i>
+                    </span>
+                </div>
+                <div class="error-messages" id="passwordError2"></div>
+
+                
+
+            </div>
+            <div class="col-md-6"><br>
+                
+                <label for="last_name" class="form-label">Last Name:</label>
+                <input type="text" pattern="[A-Za-z]+" title="Student name should not contain special characters or numbers" class="form-control" id="last_name" name="last_name" placeholder="Last Name" required><br>
+
+            <label for="email" class="form-label">Email Id:</label>
+            <input type="email" pattern="[a-z0-9._%+-]+@gmail\.com" title="Email id should contain @gmail.com and should not be given in uppercase characters" class="form-control" id="email" name="email" placeholder="Enter Email Address" required><br>
+            {% if user_form.email.errors %}
+                <div class="error-messages">{{ user_form.email.errors.0 }}</div>
+  {% endif %}
+
+                <label for="password" class="form-label">Password:</label>
+                <div class="input-group">
+                    <input type="password" pattern="^(?!.*\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$" title="Password should contain at least one uppercase character, one digit, and one special character, and should be at least 8 characters long" class="form-control" id="password" name="password" placeholder="Enter Password" required>
+                    <span class="input-group-text">
+                        <i class="fa fa-eye" aria-hidden="true" id="togglePassword"></i>
+                    </span>
+                </div>
+                <div class="error-messages" id="passwordError"></div>
+                
+            </div>
+        </div>
+<br>
+        <center><button
+            style="
+              background: linear-gradient(145deg, #F7A930, #F7A930);
+                color: #fff;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 10px;
+                font-weight: bold;
+                cursor: pointer;
+                box-shadow: 8px 8px 16px #d8d8d8, -8px -8px 16px #ffffff;
+                transition: background 0.3s ease-in-out;
+            "
+          onclick="return confirmCreateStudent()">Create Now</button></center><br>
+    </form>
+</section>
+<script>
+    function confirmCreateStudent() {
+        var isConfirmed = confirm("Are you sure you want to create this Student?");
+        return isConfirmed;
+    }
+    </script>
+<script>
+    function validateEmail() {
+        var emailInput = document.getElementById('email');
+        var emailValue = emailInput.value.toLowerCase();
+    
+        if (!emailValue.endsWith('@gmail.com')) {
+            alert('Please enter a valid Gmail address.');
+            return false;
+        }
+    
+        return true;
+    }
+    </script>
+<script>
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+    </script>
+    
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dateOfJoinInput = document.getElementById('date_of_join');
+        
+        // Get the current date in the format "YYYY-MM-DD"
+        const currentDate = new Date().toISOString().split('T')[0];
+        
+        // Set the minimum date for the "Date of Joining" input
+        dateOfJoinInput.setAttribute('min', currentDate);
+    });
+</script>
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+    
+        togglePassword.addEventListener('click', function() {
+            if (password.type === 'password') {
+                password.type = 'text';
+                togglePassword.classList.remove('fa-eye');
+                togglePassword.classList.add('fa-eye-slash');
+            } else {
+                password.type = 'password';
+                togglePassword.classList.remove('fa-eye-slash');
+                togglePassword.classList.add('fa-eye');
+            }
+        });
+    
+        const togglePassword2 = document.querySelector('#togglePassword2');
+        const password2 = document.querySelector('#password2');
+    
+        togglePassword2.addEventListener('click', function() {
+            if (password2.type === 'password') {
+                password2.type = 'text';
+                togglePassword2.classList.remove('fa-eye');
+                togglePassword2.classList.add('fa-eye-slash');
+            } else {
+                password2.type = 'password';
+                togglePassword2.classList.remove('fa-eye-slash');
+                togglePassword2.classList.add('fa-eye');
+            }
+        });
+        const form = document.querySelector('.login');
+    form.addEventListener('submit', function(event) {
+        const passwordValue = password.value;
+        const password2Value = password2.value;
+        const passwordError2 = document.getElementById('passwordError2');
+
+        if (passwordValue !== password2Value) {
+            passwordError2.innerHTML = 'Passwords do not match';
+            event.preventDefault(); // Prevent form submission
+        } else {
+            passwordError2.innerHTML = '';
+        }
+    });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

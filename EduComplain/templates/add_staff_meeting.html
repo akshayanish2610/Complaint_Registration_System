@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Meeting</title>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        header {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+            position: relative;
+            /* Add relative positioning */
+        }
+
+        header:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 23px;
+        }
+
+        nav a:hover {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 23px;
+        }
+
+        .dashboard {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        
+        h2 {
+            color: #3498db;
+        }
+        
+        form {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 50px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px; /* Added margin to separate buttons */
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Style for the logout link */
+        form[action="{% url 'user_logout' %}"] {
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+        }
+
+        form[action="{% url 'user_logout' %}"] span {
+            margin-right: 20px;
+        }
+
+        form[action="{% url 'user_logout' %}"] a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 23px;
+        }
+
+        form[action="{% url 'user_logout' %}"] a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <header>
+        <h1>Welcome, {{ user.first_name }} {{ user.last_name }}!</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'staff_dashboard' %}">Home</a></li>
+                <li><a href="{% url 'staff_complaint_display'%}">View Complaints</a></li>
+                <li><a href="{%url 'create_student'%}">Register Students</a></li>
+                <li><a href="{% url 'student_list'%}">Students List</a></li>
+                <li><a href="">Analytics</a></li>
+                <li><a href="{% url 'user_logout' %}">Logout</a></li>
+                
+                  
+            </ul>
+        </nav>
+    </header>
+
+    <div class="dashboard">
+        <form method="post" action="{% url 'add_staff_meeting' %}">
+            {% csrf_token %}
+            <h2>Add Staff Meeting</h2>
+            <label for="id_title">Title:</label>
+            <input type="text" name="title" id="id_title" required>
+
+            <label for="id_description">Description:</label>
+            <textarea name="description" id="id_description" rows="4" required></textarea>
+
+            <label for="id_meeting_datetime">Meeting Date & Time:</label>
+            <input type="datetime-local" name="meeting_datetime" id="id_meeting_datetime" required>
+
+            <label for="id_google_meet_link">Google Meet Link:</label>
+            <input type="url" name="google_meet_link" id="id_google_meet_link" required>
+
+            <button type="submit">Save</button>
+            <button type="button" onclick="window.location.href='{% url 'view_staff_meetings' %}'">View Staff Meetings</button>
+        </form>
+    </div>
+    
+
+</body>
+
+</html>
